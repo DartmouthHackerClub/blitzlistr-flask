@@ -6,6 +6,10 @@ Uses python-ldap
 Introduction:
 --------------------
 
+This project uses Dartmouth's ldap directory to look up a Dartmouth email address when passed a netid.  To use, follow the setup instructions and then run the test script:
+
+	$ python ldaptest.py
+
 Setup
 -----
 

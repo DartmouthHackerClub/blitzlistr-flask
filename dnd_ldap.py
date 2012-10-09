@@ -1,30 +1,32 @@
-def lookup(key, word):
+def lookup(key, word, query):
 	import ldap
 
 	try:
-		l = ldap.open("ldap.dartmouth.edu")
+		l = ldap.initialize('ldap://ldap.dartmouth.edu')
+		l.start_tls_s()
 		l.simple_bind_s("", "")
-		print "Successfully bound to server.\n"
+		print "Successfully bound to server."
 	except ldap.LDAPError, error_message:
 		print "Couldn't Connect. %s " % error_message
 
 	baseDN = "dc=dartmouth, dc=edu"
 	searchScope = ldap.SCOPE_SUBTREE
 
-	retrieveAttributes = ["mail"]
+	retrieveAttributes = [query]
 	searchFilter = (key + "="+ word)
-
+	print "Searching for \"" + query + "\" using search filter \"" + searchFilter + "\"."
 	try:
 		ldap_result_id = l.search(baseDN, searchScope, searchFilter, retrieveAttributes)
 		result_set = []
 		while 1:
 			result_type, result_data = l.result(ldap_result_id, 0)
 			if (result_data == []):
+				print "Unbinding from Server"
+				l.unbind()
 				break
 			else:
 				if result_type == ldap.RES_SEARCH_ENTRY:
 					print result_data
-	#	print result_data
 	except ldap.LDAPError, e:
 		print e
 
