@@ -1,7 +1,6 @@
-def main(netid):
+def lookup(key, word):
 	import ldap
 
-	keyword = netid
 	try:
 		l = ldap.open("ldap.dartmouth.edu")
 		l.simple_bind_s("", "")
@@ -13,7 +12,7 @@ def main(netid):
 	searchScope = ldap.SCOPE_SUBTREE
 
 	retrieveAttributes = ["mail"]
-	searchFilter = ("dndAssignedNetid="+ keyword)
+	searchFilter = (key + "="+ word)
 
 	try:
 		ldap_result_id = l.search(baseDN, searchScope, searchFilter, retrieveAttributes)
