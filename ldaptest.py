@@ -1,5 +1,5 @@
 from dnd_ldap import *
-
+# dndAssignedNetid
 word = raw_input("Enter a netid:")
 print "you entered: \"" + word + "\""
-lookup("dndAssignedNetid",word,"mail")
+lookup("uid",word,"mail")
