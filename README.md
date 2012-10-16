@@ -37,3 +37,5 @@ dependencies:
     $ cd dnd-ldap
     $ pip install -r requirements.txt
 
+ToDos:
+- some implementations of openssl have trouble with tls, let me know whats going on and how to fix it, mine works perfectly!
