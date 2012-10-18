@@ -1,4 +1,4 @@
-def lookup(key, word, query):
+def lookup(query):
 	import ldap
 
 	try:
@@ -11,10 +11,16 @@ def lookup(key, word, query):
 
 	baseDN = "dc=dartmouth, dc=edu"
 	searchScope = ldap.SCOPE_SUBTREE
+	retrieveAttributes = ['mail']
+	# retrieveAttributes= what LDAP retrieves in response to query. None for everything, expects list of strings
+	paddedQuery = "*"
+	query_list = query.split(' ')
+	for s in query_list:
+		paddedQuery = paddedQuery+ "".join(s +"*")
 
-	retrieveAttributes = [query]
-	searchFilter = (key + "="+ word)
-	print "Searching for \"" + query + "\" using search filter \"" + searchFilter + "\"."
+	# searchFilter is the LDAP Search Filter: Use 'dndAssignedNetid' for netid
+	searchFilter = "(|(cn="+ paddedQuery + ")(nickname=" + paddedQuery+"))"
+	print "Searching using search filter \"" + searchFilter + "\"."
 	try:
 		ldap_result_id = l.search(baseDN, searchScope, searchFilter, retrieveAttributes)
 		result_set = []
