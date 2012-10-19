@@ -6,7 +6,7 @@ def lookup(query,attribs):
 	response = []
 	try:
 		l = ldap.initialize('ldap://ldap.dartmouth.edu')
-		l.start_tls_s()
+#		l.start_tls_s()
 		l.simple_bind_s("", "")
 		print "Successfully bound to server."
 	except ldap.LDAPError, error_message:
