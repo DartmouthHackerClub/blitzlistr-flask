@@ -1,6 +1,9 @@
-def lookup(query):
-	import ldap
+# Performs a DND Lookup
+# query is a string, while attribs is the attributes you want returned for each matching object
 
+def lookup(query,attribs):
+	import ldap, re
+	response = []
 	try:
 		l = ldap.initialize('ldap://ldap.dartmouth.edu')
 		l.start_tls_s()
@@ -11,16 +14,12 @@ def lookup(query):
 
 	baseDN = "dc=dartmouth, dc=edu"
 	searchScope = ldap.SCOPE_SUBTREE
-	retrieveAttributes = ['mail']
-	# retrieveAttributes= what LDAP retrieves in response to query. None for everything, expects list of strings
-	paddedQuery = "*"
-	query_list = query.split(' ')
-	for s in query_list:
-		paddedQuery = paddedQuery+ "".join(s +"*")
+	retrieveAttributes = attribs
+	query = (re.sub("^|\s+|$", "*", query))
+	searchFilter = "(|(cn="+ query + ")(nickname=" + query +")(mail="+ query + "))"
 
-	# searchFilter is the LDAP Search Filter: Use 'dndAssignedNetid' for netid
-	searchFilter = "(|(cn="+ paddedQuery + ")(nickname=" + paddedQuery+"))"
-	print "Searching using search filter \"" + searchFilter + "\"."
+	print "Requested \"" + str(attribs) + "\" using search filter \"" + searchFilter + "\"."
+
 	try:
 		ldap_result_id = l.search(baseDN, searchScope, searchFilter, retrieveAttributes)
 		result_set = []
@@ -31,8 +30,13 @@ def lookup(query):
 				break
 			else:
 				if result_type == ldap.RES_SEARCH_ENTRY:
-					d = [tup[1] for tup in result_data]
-					print result_data
-					print d
+					entry = []
+					result_dict = [tup[1] for tup in result_data]
+					for d in result_dict:
+						for value in d.values():
+							entry+= value
+						response.append(entry)
 	except ldap.LDAPError, e:
 		print e
+
+	return response
