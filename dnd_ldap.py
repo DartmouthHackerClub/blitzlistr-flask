@@ -1,16 +1,20 @@
-# Performs a DND Lookup
-# query is a string, while attribs is the attributes you want returned for each matching object
+import ldap, re
 
-def lookup(query,attribs=None):
-    import ldap, re
+default_attributes = ['cn', 'mail', 'dndDeptclass', 'eduPersonAffiliation', 'dndAssignedNetid'] 
+
+l = None
+
+def lookup(query,attribs=default_attributes):
+    global l
     response = []
-    try:
-        l = ldap.initialize('ldap://ldap.dartmouth.edu')
-#       l.start_tls_s()
-        l.simple_bind_s("", "")
-        print "Successfully bound to server."
-    except ldap.LDAPError, error_message:
-        print "Couldn't Connect. %s " % error_message
+
+    if l is None:
+        try:
+            l = ldap.ldapobject.ReconnectLDAPObject('ldap://ldap.dartmouth.edu')
+            l.simple_bind_s("", "")
+        except ldap.LDAPError, error_message:
+            l = None
+            return None
 
     baseDN = "dc=dartmouth, dc=edu"
     searchScope = ldap.SCOPE_SUBTREE
@@ -18,20 +22,12 @@ def lookup(query,attribs=None):
     query = (re.sub("^|\s+|$", "*", query))
     searchFilter = "(|(cn="+ query + ")(nickname=" + query +")(mail="+ query + "))"
 
-    print "Requested \"" + str(attribs) + "\" using search filter \"" + searchFilter + "\"."
-
     try:
-        ldap_result_id = l.search(baseDN, searchScope, searchFilter, retrieveAttributes)
-        result_set = []
-        while 1:
-            result_type, result_data = l.result(ldap_result_id, 0)
-            if (result_data == []):
-                l.unbind()
-                break
-            else:
-                if result_type == ldap.RES_SEARCH_ENTRY:
-                        response.append(result_data)
+        results = l.search_st(baseDN, searchScope, searchFilter, retrieveAttributes, timeout=1)
+        for r in results:
+            response.append(r[1])
     except ldap.LDAPError, e:
         print e
+        return None
 
     return response
