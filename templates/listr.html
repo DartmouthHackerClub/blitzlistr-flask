@@ -1,0 +1,40 @@
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Blitzlistr</title>
+</head>
+<body>
+    <h1> Blitz Listr</h1>
+    <div id="err_msg"> {{ err_msg }} </div>
+
+    {% if to_string != "" %}
+    <div id="to_string">
+        <h2>Your mailing list:</h2>
+        <code>{{to_string}}</code>
+    </div>
+    {% endif %}
+
+    {% if conflict_string != "" %}
+    <div id="conflicts">
+        <h3>The following names returned multiple results:</h3>
+        <code>{{conflict_string}}</code>
+    </div>
+    {% endif %}
+
+    {% if not_founds_string != "" %}
+    <div id="not_founds">
+        <h3>The follow names returned zero results:</h3>
+        <code>{{not_founds_string}}</code>
+    </div>
+    {% endif %}
+
+    <div id="search_box">
+        <h2>Enter list of names:</h2>
+        <form action="blitzlistr" method="get">
+            <textarea cols="80" rows="10" name="qlist_txt"></textarea>
+            <input type="submit" />
+        </form>
+    </div>
+
+<body>
+</html>

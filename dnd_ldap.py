@@ -19,6 +19,7 @@ def lookup(query,attribs=default_attributes):
     baseDN = "dc=dartmouth, dc=edu"
     searchScope = ldap.SCOPE_SUBTREE
     retrieveAttributes = attribs
+    query = query.strip()
     query = (re.sub("^|\s+|$", "*", query))
     searchFilter = "(|(cn="+ query + ")(nickname=" + query +")(mail="+ query + "))"
 
