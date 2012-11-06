@@ -14,7 +14,9 @@ def make_list():
     qlist_txt = request.args.get('qlist_txt')
 
     if qlist_txt:
+        qlist_txt = qlist_txt.strip(',;\n\r ')
         qlist = re.split(',|;|\n', qlist_txt)
+        print qlist
     else:
         qlist = []
 

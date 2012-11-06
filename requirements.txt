@@ -1,1 +1,2 @@
 python-ldap>=2.4.10
+flask>=0.9
