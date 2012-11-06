@@ -16,7 +16,6 @@ def make_list():
     if qlist_txt:
         qlist_txt = qlist_txt.strip(',;\n\r ')
         qlist = re.split(',|;|\n', qlist_txt)
-        print qlist
     else:
         qlist = []
 
