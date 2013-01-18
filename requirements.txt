@@ -1,2 +1,3 @@
 python-ldap>=2.4.10
 flask>=0.9
+gunicorn==0.16.1
