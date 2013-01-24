@@ -6,10 +6,6 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return redirect('/blitzlistr')
-
-@app.route("/blitzlistr")
-def make_list():
     err_msg = ""
     qlist_txt = request.args.get('qlist_txt')
 
