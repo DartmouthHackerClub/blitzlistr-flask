@@ -17,23 +17,24 @@ def index():
 
     conflicts = []
     not_founds = []
-    results = []
+    blitzlist = []
     for query in qlist:
-        r = lookup(query, ['mail'])
-        print r
-        if r is None:
+        results = lookup(query)
+        print results
+        if results is None:
+            blitzlist = []
             err_msg = "LDAP query failed"
-            break
-        elif len(r) == 1:
-            results.append(r[0]['mail'][0])
-        elif len(r) == 0:
+        
+        elif len(results) == 1:
+            result = results[0]
+            blitzlist.append(result['Email'])
+        elif len(results) == 0:
             not_founds.append(query)
-        elif len(r) > 1:
-            mails = map(lambda x: x['mail'][0], r)
-            conflicts.append((query, mails))
+        elif len(results) > 1:
+            conflicts.append(query)
 
-    to_string = "; ".join(results)
-    conflict_string = ", ".join(map(lambda c:c[0] , conflicts))
+    to_string = "; ".join(blitzlist)
+    conflict_string = ", ".join(conflicts)
     not_founds_string = ", ".join(not_founds)
 
     return render_template('listr.html', to_string=to_string, \
@@ -41,4 +42,4 @@ def index():
                             conflict_string=conflict_string)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
